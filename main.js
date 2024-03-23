@@ -1,36 +1,47 @@
 import * as THREE from 'three';
-
-// container chứa đối tượng sẽ được render
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // Ensure correct path
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const scene = new THREE.Scene();
+const loader = new GLTFLoader();
 
-// khởi tạo camera góc nhìn với các tham số: góc nhìn 75 độ, tỷ lệ khung hình, mặt cắt gần, mặt cắt xa ( xác định phạm vi hiển thị )
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
-// đặt vị trí camera tại 0 0 100 trong scene ( x, y, z)
-camera.position.set( 0, 0, 100 );
-// hướng camera nhìn về điểm 0, 0, 0 trong scene
-camera.lookAt( 0, 0, 0 );
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000);
+renderer.setPixelRatio(window.devicePixelRatio);
 
-// tạo một render để vẽ scene 3D
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild(renderer.domElement);
 
-document.body.appendChild( renderer.domElement );
+const spotLight = new THREE.SpotLight(0xffffff,  3, 100, 0.22, 1);
+spotLight.position.set(0, 25, 0);
+spotLight.castShadow = true;
+spotLight.shadow.bias = -0.0001;
+scene.add(spotLight);
 
-// tạo material cho line
-const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-// tạo mảng lưu trữ các điểm
-const points = [];
-points.push( new THREE.Vector3( - 10, 0, 0 ) );
-points.push( new THREE.Vector3( 0, 10, 0 ) );
-points.push( new THREE.Vector3( 10, 0, 0 ) );
+loader.load('donut.glb', (gltf) => {
+	const mesh = gltf.scene;
+	mesh.position.set(0, 1.05, -1);
+	scene.add(mesh);
+})
 
-const geometry = new THREE.BufferGeometry().setFromPoints( points );
-const line = new THREE.Line( geometry, material );
+const camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 1, 1000);
+camera.position.set(4, 5, 11);
+camera.lookAt(0, 0, 0)
 
-scene.add( line );
-// tạp vòng lặp animation với 60 fps
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 5;
+controls.maxDistance = 20;
+controls.minPolarAngle = 0.5;
+controls.maxPolarAngle = 1.5;
+controls.autoRotate = false;
+controls.target = new THREE.Vector3(0, 1, 0);
+controls.update();
+
 function animate() {
-	requestAnimationFrame( animate );
-	renderer.render( scene, camera );
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera); 
 }
+
 animate();
