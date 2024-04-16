@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  position: relative;
+}
+
+.end-game {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+.end-game button {
+  padding: 20px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 40px;
+  background-color: rgb(0, 94, 255);
+  border-radius: 8px;
+  box-shadow: rgba(89, 149, 251, 1) 4px 4px 0px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+}
+
+.end-game button:active {
+  transform: translate(4px);
+  box-shadow: rgba(89, 149, 251, 1) 0px 0px 0px;
+}
