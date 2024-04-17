@@ -1,10 +1,13 @@
 import { Entity } from "./entity";
-import { generateRandomPosition, createLane } from '../utilities/generateMap.js'
+import {
+  generateRandomPosition,
+  createLane,
+} from "../utilities/generateMap.js";
 import { playSfx } from "../utilities/playSound.js";
 
-const counterDOM = document.getElementById('counter');
-const maxScore = document.getElementById('maxScore');
-const currentMaxScore = localStorage.getItem('maxScoreFunWorld')
+const counterDOM = document.getElementById("counter");
+const maxScore = document.getElementById("maxScore");
+const currentMaxScore = localStorage.getItem("maxScoreFunWorld");
 
 export class Player extends Entity {
   constructor(type, models, x, y, z) {
@@ -12,7 +15,7 @@ export class Player extends Entity {
     this.isJumping = false;
     this.duration = 400; // Thời gian mỗi animation
     this.ScoreNow = 0;
-    this.counter = 0
+    this.counter = 0;
   }
 
   play(models, scene) {
@@ -20,16 +23,18 @@ export class Player extends Entity {
     let pressedKey = false;
 
     // Event listener for keydown
-    document.addEventListener('keydown', (event) => {
+
+    document.addEventListener("keydown", (event) => {
       try {
         if (!pressedKey) {
           pressedKey = true;
           setTimeout(() => {
             pressedKey = false;
-          }, this.duration)
+          }, this.duration);
 
           let keyCode = event.code;
-          let deltaX = 0, deltaZ = 0;
+          let deltaX = 0,
+            deltaZ = 0;
 
           switch (keyCode) {
             case "ArrowLeft":
@@ -44,8 +49,9 @@ export class Player extends Entity {
 
             case "ArrowDown":
               if (this.targetZ != 0) {
-                deltaZ = -movementDistance;// xuong
+                deltaZ = -movementDistance; // xuong
                 this.jump();
+                this.counter--;
                 // deleteLane(scene)
               }
               break;
@@ -55,17 +61,18 @@ export class Player extends Entity {
               this.jump();
               this.targetZ = this.posZ + deltaZ;
               // thêm lane
-              const laneType = generateRandomPosition(0, 2) === 0 ? 'field' : 'road';
-              const direction = Math.random() < 0.5 ? 'left' : 'right';
+              const laneType =
+                generateRandomPosition(0, 2) === 0 ? "field" : "road";
+              const direction = Math.random() < 0.5 ? "left" : "right";
 
-              createLane(laneType, direction, this.targetZ + 13, models, scene)
+              createLane(laneType, direction, this.targetZ + 13, models, scene);
               this.counter++;
               if (this.counter > this.ScoreNow) {
                 this.ScoreNow = this.counter;
               }
-              if (this.counter >= currentMaxScore) {
-                localStorage.setItem('maxScoreFunWorld', this.counter)
-                maxScore.innerText = "Max: " + this.ScoreNow
+              if (this.ScoreNow >= currentMaxScore) {
+                localStorage.setItem("maxScoreFunWorld", this.counter);
+                maxScore.innerText = "Max: " + this.ScoreNow;
               }
               counterDOM.innerText = this.ScoreNow;
               break;
@@ -84,10 +91,9 @@ export class Player extends Entity {
           this.model.lookAt(this.targetX, 0, this.targetZ);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-
-    })
+    });
   }
 
   jump() {
@@ -105,8 +111,10 @@ export class Player extends Entity {
     const elapsedTime = Date.now() - this.startTime;
     const progress = Math.min(elapsedTime / this.duration, 1); // Ensure jump completes within duration
 
-    const jumpPosition = this.jumpStartPosY + jumpHeight * Math.sin(Math.PI * progress);
-    const horizontalPosition = this.posX + (this.targetX - this.posX) * progress;
+    const jumpPosition =
+      this.jumpStartPosY + jumpHeight * Math.sin(Math.PI * progress);
+    const horizontalPosition =
+      this.posX + (this.targetX - this.posX) * progress;
     const verticalPosition = this.posZ + (this.targetZ - this.posZ) * progress;
 
     this.model.position.y = jumpPosition;

@@ -5,10 +5,13 @@ import { Player } from "./entities/player.js";
 import { generateLanes, animateVehicle } from "./utilities/generateMap.js";
 import { playMusic } from "./utilities/playSound.js";
 
+const rankButton = document.getElementById("see-rank");
+const retryButton = document.querySelector(".end-game button");
+const closeButton = document.getElementById("btn-close");
 const counterCurrent = document.getElementById("counter");
 const maxScore = document.getElementById("maxScore");
 const retry = document.querySelector(".end-game");
-const retryButton = document.querySelector(".end-game button");
+const rankInformation = document.querySelector(".rank-container");
 
 let cars = [];
 let player;
@@ -215,6 +218,7 @@ function checkCollisions() {
     const distance = player.model.position.distanceTo(carPosition);
     if (distance < collisionThreshold) {
       endGame();
+
       return;
     }
   }
@@ -235,12 +239,13 @@ function checkCollisions() {
     }*/
 }
 
-function endGame() {
-  player.setPosition(0, 0, 0);
-  camera.position.set(4, 12, -5);
+function endGame(event) {
   retry.style.display = "block";
-  player.counter = 0;
-  counterCurrent.innerText = player.counter;
+
+  event.preventDefault();
+  document.addEventListener("keydown", function (event) {
+    event.preventDefault();
+  });
 }
 
 function animate() {
@@ -266,4 +271,16 @@ animate();
 retryButton.addEventListener("click", function () {
   var endGameDiv = document.querySelector(".end-game");
   endGameDiv.style.display = "none";
+  player.setPosition(0, 0, 0);
+  camera.position.set(4, 12, -5);
+  player.counter = 0;
+  counterCurrent.innerText = player.counter;
+});
+
+rankButton.addEventListener("click", function () {
+  rankInformation.style.display = "block";
+});
+
+closeButton.addEventListener("click", function () {
+  rankInformation.style.display = "none";
 });
