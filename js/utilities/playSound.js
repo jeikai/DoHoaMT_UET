@@ -14,7 +14,7 @@ export function playMusic() {
 
     const music = new THREE.Audio(listener);
     const audioLoader = new THREE.AudioLoader();
-    const audioPath = `../assets/sounds/music/${musicSelection}.mp3`;
+    const audioPath = `../public/sounds/music/${musicSelection}.mp3`;
     audioLoader.load( audioPath, (buffer) => {
       music.setBuffer( buffer );
       music.setVolume(0.1);
