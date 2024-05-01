@@ -62,9 +62,12 @@ export async function loadAllModels(modelPaths) {
             let scale = 0;
             if (modelPath.type[1] === "land" || modelPath.type[1] === "road" || modelPath.type[1] === "car") {
                 scale = 1 / Math.min(size.x, size.z);
-            } else {
-                scale = 1 / Math.max(size.x, size.z);
+            } else if (modelPath.type[1] === "player") {
+                scale = 0.7 / Math.min(size.x, size.z);
             }
+            else {
+                scale = 1 / Math.max(size.x, size.z);
+            } 5
 
             model.scale.set(scale, scale, scale);
             models.push({ type: modelPath.type[0], model: model });

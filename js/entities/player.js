@@ -13,7 +13,7 @@ const currentMaxScore = localStorage.getItem("maxScoreFunWorld");
 
 export class Player extends Entity {
   isDead = false;
-
+ 
   constructor(type, models, x, y, z, scene) {
     super(type, models, x, y, z);
     this.scene = scene;

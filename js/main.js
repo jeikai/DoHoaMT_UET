@@ -202,6 +202,8 @@ async function getDataRank() {
     const response = await axios.get(baseUrl)
     if (response.data.message === "OK") {
       const rankContainer = document.querySelector(".rank-container");
+      const existingRankItems = rankContainer.querySelectorAll(".rank-item");
+      existingRankItems.forEach((item) => item.remove());
       const rankHeader = rankContainer.querySelector(".rank-header");
       rankHeader.innerHTML = "";
 
@@ -209,7 +211,6 @@ async function getDataRank() {
       rankRow.classList.add("rank-header");
       rankRow.innerHTML = `
         <p>Rank</p>
-        <p>Score</p>
       `;
       rankHeader.appendChild(rankRow);
 
@@ -289,17 +290,21 @@ function playGame() {
   player = new Player("chicken", models, 0, 0, 0);
   scene.add(player.model);
 
+
+
   cars = generateLanes(models, scene).cars;
 }
 
 const collisionThreshold = 1;
 
 function checkCollisions() {
+  const playerBox = new THREE.Box3().setFromObject(player.model);
+
   for (let i = 0; i < cars.length; i++) {
     const car = cars[i];
-    const carPosition = car.model.position;
-    const distance = player.model.position.distanceTo(carPosition);
-    if (distance < collisionThreshold) {
+    const carBox = new THREE.Box3().setFromObject(car.model);
+
+    if (playerBox.intersectsBox(carBox)) {
       endGame();
 
       return;
@@ -310,11 +315,11 @@ function checkCollisions() {
 function shadowCamFollowPlayer() {
   let playerPos = player.model.position;
   shadowLight.position.set(playerPos.x - 50, 50, playerPos.z - 50)
-
-  shadowLight.shadow.camera.left = playerPos.x - 15; // Điểm bắt đầu bên trái của phạm vi camera
-  shadowLight.shadow.camera.right = playerPos.x + 15; // Điểm kết thúc bên phải của phạm vi camera
-  shadowLight.shadow.camera.top = playerPos.z + 15; // Điểm kết thúc phía trên của phạm vi camera
-  shadowLight.shadow.camera.bottom = playerPos.z - 15; // Điểm bắt đầu phía dưới của phạm vi camera
+  shadowLight.target = player.model;
+  shadowLight.shadow.camera.left = playerPos.x - 8; // Điểm bắt đầu bên trái của phạm vi camera
+  shadowLight.shadow.camera.right = playerPos.x + 8; // Điểm kết thúc bên phải của phạm vi camera
+  shadowLight.shadow.camera.top = playerPos.z + 8; // Điểm kết thúc phía trên của phạm vi camera
+  shadowLight.shadow.camera.bottom = playerPos.z - 8; // Điểm bắt đầu phía dưới của phạm vi camera
   // console.error(shadowLight.shadow.camera.left + " " + shadowLight.shadow.camera.right + " " +
   //   shadowLight.shadow.camera.top + " " + shadowLight.shadow.camera.down);
 }
@@ -356,6 +361,8 @@ function addEvent() {
           score: localStorage.getItem("maxScoreFunWorld")
         }
         const response = await axios.put(baseUrl, data)
+        player.counter = 0;
+        player.ScoreNow = 0;
         getDataRank()
       }
     } catch (error) {
@@ -367,8 +374,9 @@ function addEvent() {
     player.setPosition(0, 0, 0);
     camera.position.set(4, 12, -5);
     player.counter = 0;
+    player.ScoreNow = 0;
     player.isDead = false;
-    counterCurrent.innerText = player.counter;
+    counterCurrent.innerText =  player.counter; 
   });
 
   rankButton.addEventListener("click", function () {
