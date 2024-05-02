@@ -282,12 +282,13 @@ const initGame = async () => {
 initGame();
 addEvent();
 
-function playGame() {
+async function playGame() {
   if (models === null || models === undefined) {
     console.error("models null at main");
   }
 
   player = new Player("chicken", models, 0, 0, 0);
+  await new Promise((resolve) => setTimeout(resolve, 100));
   scene.add(player.model);
 
 
