@@ -289,7 +289,6 @@ function playGame() {
   if (models === null || models === undefined) {
     console.error("models null at main");
   }
-  isStarted = true;
   player = new Player("chicken", models, 0, 0, 0);
   scene.add(player.model);
 
@@ -399,6 +398,7 @@ function addEvent() {
   startButton.addEventListener("click", () => {
     startButton.style.display = "none";
     gameTitle.style.display = "none";
+    isStarted = true;
     playMusic();
     player.play(models, scene);
   });
