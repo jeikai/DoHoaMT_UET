@@ -20,6 +20,7 @@ const gameTitle = document.querySelector("#gameTitle");
 
 let cars = [];
 let player;
+let isStarted = false;
 
 //Camera
 const scene = new THREE.Scene();
@@ -288,7 +289,7 @@ function playGame() {
   if (models === null || models === undefined) {
     console.error("models null at main");
   }
-
+  isStarted = true;
   player = new Player("chicken", models, 0, 0, 0);
   scene.add(player.model);
 
@@ -388,9 +389,11 @@ function addEvent() {
   });
 
   closeButton.addEventListener("click", function () {
-    rankInformation.style.display = "none";
-    startButton.style.display = "block";
-    gameTitle.style.display = "block";
+    rankInformation.style.display = "none"; 
+    if (!isStarted) {
+      startButton.style.display = "block";
+      gameTitle.style.display = "block";
+    }
   });
 
   startButton.addEventListener("click", () => {
